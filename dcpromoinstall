@@ -19,3 +19,6 @@ DN,objectClass
 csvde -f exporusers.csv
 //import users
 csvde -i -f importusers.csv
+
+//Add a User to a Group
+dsmod group "cn=LondonUsers,ou=London,dc=domain,dc=local" -addmbr "cn=JoeUser1,ou=London,dc=domain,dc=local"
