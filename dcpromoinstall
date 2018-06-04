@@ -1,0 +1,2 @@
+//in case of problems-
+net user Administrator <password> /passwordreq:yes
