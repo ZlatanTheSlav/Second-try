@@ -1,0 +1,87 @@
+Reset Password and Force Change at Logon for an Entire OU:
+
+dsquery user "OU=London,OU=Staff,DC=vmadmin,DC=local" | dsmod user -pwd Password1 -mustchpwd yes
+
+
+Change "company" AD attribute for all Users in an Entire OU:
+
+dsquery user "OU=London,OU=Staff,DC=vmadmin,DC=local" | dsmod user -company "VMadmin"
+
+ 
+Return the DN of all users in an OU:
+dsquery user "OU=London,OU=Staff,DC=vmadmin,DC=local"
+
+"CN=User1,OU=London,OU=Staff,DC=vmadmin,DC=local"
+"CN=User2,OU=London,OU=Staff,DC=vmadmin,DC=local"
+"CN=User3,OU=London,OU=Staff,DC=vmadmin,DC=local"
+  
+
+Return the DN of all users in an OU, then get all the groups the users are a member of:
+dsquery user "OU=London,OU=Groups,DC=vmadmin,DC=local" | dsget user -memberof
+ 
+"CN=Group1,OU=London,OU=Groups,DC=vmadmin,DC=local"
+"CN=Group2,OU=London,OU=Groups,DC=vmadmin,DC=local"
+"CN=Group3,OU=London,OU=Groups,DC=vmadmin,DC=local"
+
+
+Return the DN of all users in an OU, then get all the groups the users are a member of and use recursion:
+dsquery user "OU=London,OU=Staff,DC=vmadmin,DC=local" | dsget user -memberof -expand
+ 
+"CN=Group1,OU=London,OU=Groups,DC=vmadmin,DC=local"
+"CN=Group2,OU=London,OU=Groups,DC=vmadmin,DC=local"
+"CN=Group3,OU=London,OU=Groups,DC=vmadmin,DC=local"
+"CN=Group4,OU=London,OU=Groups,DC=vmadmin,DC=local"
+"CN=Group5,OU=London,OU=Groups,DC=vmadmin,DC=local"
+
+Return the DN of all users in an OU, then get all the groups the users are a member of and use recursion. Then return the name of all the groups:
+dsquery user "OU=London,OU=Staff,DC=vmadmin,DC=local" | dsget user -memberof -expand | dsget group -samid
+
+  samid
+  Group1
+  Group2
+  Group3
+  Group4
+  Group5
+ 
+Get all the groups a user is a member of and use recursion. Then return the name of all the groups:
+dsquery user "CN=User3,OU=London,OU=Staff,DC=vmadmin,DC=local" | dsget user -memberof -expand | dsget group -samid
+
+  samid
+  Group1
+  Group2
+
+Create an OU:
+
+dsadd ou "ou=London,dc=domain,dc=local"
+
+Create a Group:
+
+dsadd group "cn=London Users,ou=London,dc=domain,dc=local"
+
+Create a User:
+dsadd user "cn=JoeUser1,ou=London,dc=domain,dc=local"
+
+
+Add a User to a Group:
+
+dsmod group "cn=LondonUsers,ou=London,dc=domain,dc=local" -addmbr "cn=JoeUser1,ou=London,dc=domain,dc=local"
+ 
+
+Find User Beggining with "J" and Return Matching Users "samid" and "department" Attributes:
+
+dsquery user domainroot -name J* | dsget user -samid -dept
+ 
+
+Move an OU:
+
+dsmove "ou=LiverpoolStreetOffice,dc=domain,dc=local" -newparent "ou=London,dc=domain,dc=local"
+
+
+Rename and OU:
+dsmove "cn=LondonUsers,ou=London,dc=domain,dc=local" -newname LondonStaff
+
+
+
+Remove an OU and all its Subtree Without Prompting:
+
+dsrm -noprompt -subtree "ou=deleteme,dc=domain,dc=local"
