@@ -3,3 +3,19 @@ net user Administrator <password> /passwordreq:yes
 
 //dcpromo command
 dcpromo /unattend:Users\username\answerfile.txt
+
+//change user password command
+Set-ADAccountPassword -identity ‘cn=amy strand, ou=IT, dc=contoso, dc=com’ -Reset -NewPassword 
+(ConvertTo-SecureString -AsPlainText "Pa$$w0rd2" -Force)
+
+//disable user account 
+disable-adaccount -identity <firstnamelastname>
+
+//import user account
+DN,objectClass
+"Cn=Jivko Vasilev, Ou=unit1, dc=ict, dc=ictmi, dc=test", user
+
+//export user accounts command
+csvde -f exporusers.csv
+//import users
+csvde -i -f importusers.csv
