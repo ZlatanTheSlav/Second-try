@@ -1,0 +1,2 @@
+dnscmd lon-dc1 /config /EnableGlobalNamesSupport 1
+dnscmd /RecordAdd GlobalNames DC CNAME lon-dc1.<domeinname>
