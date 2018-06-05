@@ -1,0 +1,4 @@
+ntdsutil.exe
+activate instance ntds
+ifm
+create sysvol full c:\ifm
