@@ -1,0 +1,6 @@
+@echo off
+net use * /delete /yes
+if not exist "\\FULLVERSIQ\Netlogon2\%username%" (
+mkdir \\FULLVERSIQ\Netlogon2\%username%
+)
+net use P: \\FULLVERSIQ\Netlogon2\%username%
