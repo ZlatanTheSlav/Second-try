@@ -1,0 +1,73 @@
+1. Създайте копие на данните за състоянието на системата с активна директория (System State Data) за всеки от домейните Ви в папка c:\IFM-new
+
+- използвайте командата ntdsutil и операцията create sysvol full c:\IFM-new
+
+2. Изпълнете следващите задачи с цел дефрагментиране и компресиране на базата данни на активната директория в домейн контролера с FULL инсталация:
+
+- спрете услугата на AD DS;
+
+- създайте папките c:\temp и c:\original
+
+- изпълнете операциите за компресиране (уплътняване) на базата данни на активната директория
+
+ntdsutil
+activate instance NTDS
+files
+compact to C:\temp
+
+- изтрийте старите log файлове, свързани с базата данни на активната директория
+
+cd %systemroot%\ntds
+del *.log
+
+- копирайте текущата база данни за осигуряване на възможността за възстановяването ѝ
+
+copy ntds.dit c:\original
+
+- копирайте компресираната база данни в папкта за разполагане на основната база данни (%systemroot%\ntds)
+
+copy c:\temp\ntds.dit
+
+- проверете интегритета на базата данни и извършете семантична проверка на съдържащите се в нея данни
+
+ntdsutil
+activate instance NTDS
+files
+integrity
+quit
+semantic database analysis
+go fixup
+
+- стартирайте отново услугата на AD DS.
+
+3. Създайте и изпробвайте скрипт c:\temp\compact.cmd за автоматизирано изпълнение на предходната задача:
+
+del C:\temp\*.dit
+del C:\original\*.dit
+net stop ntds /y
+ntdsutil "activate instance NTDS" files "compact to C:\temp" quit quit
+cd \windows\ntds
+del *.log
+copy ntds.dit \original
+del ntds.dit
+copy c:\temp\ntds.dit
+ntdsutil "activate instance NTDS" files integrity quit "semantic database analysis" "go fixup" quit quit
+net start ntds
+
+4. В папката c:\temp създайте backup на наличните в домейна GPOs.
+
+5. Инсталирайте и проверете работата на добавката Windows System Resource Manager
+
+6. Създайте потребителски дефиниран Data Collector Set с име Custom AD DS Collector Set:
+
+- използвайте шаблон Active Directory Diagnostics
+
+- съхранете го в папкта c:\temp
+
+- определете Вашият административен потребител за изпълнение на операциите по събиране на данни
+
+- задайте една седмица за изпълнение
+
+- определете прекратяване на изпълнението при завършване на операциите по събиране на всички данни
+
+- проверете какви данни се събират.
